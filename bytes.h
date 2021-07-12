@@ -12,6 +12,11 @@
 
 DGENDECL(char,byte)
 
+byte_str_t *byte_createFromRaw(const char *src);
+
+int byte_appendRaw(byte_str_t *str, const char *s);
+int byte_copyRaw(byte_str_t *str, const char *s);
+
 /*
  * Get a size of a wide character string to store converted to wide character
  * dynamic string including a terminating null character.

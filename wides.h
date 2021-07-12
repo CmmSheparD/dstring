@@ -12,6 +12,11 @@
 
 DGENDECL(wchar_t,wide)
 
+wide_str_t *wide_createFromRaw(const wchar_t *src);
+
+int wide_appendRaw(wide_str_t *str, const wchar_t *s);
+int wide_copyRaw(wide_str_t *str, const wchar_t *s);
+
 /*
  * Get a size of a character string to store converted to multibyte
  * dynamic string including a terminating null character.

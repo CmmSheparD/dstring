@@ -23,13 +23,14 @@ typedef struct prefix##string {                                                 
 } prefix##_str_t;                                                               \
                                                                                 \
 prefix##_str_t *prefix##_create();                                              \
+prefix##_str_t *prefix##_createFrom(const prefix##_str_t *src);                 \
 void prefix##_free(prefix##_str_t *str);                                        \
                                                                                 \
 bool prefix##_isEmpty(const prefix##_str_t *str);                               \
                                                                                 \
 int prefix##_appendChar(prefix##_str_t *str, const type c);                     \
-int prefix##_appendRaw(prefix##_str_t *str, const type *s, const size_t n);     \
-int prefix##_copyRaw(prefix##_str_t *str, const type *s, const size_t n);       \
+int prefix##_appendNRaw(prefix##_str_t *str, const type *s, const size_t n);    \
+int prefix##_copyNRaw(prefix##_str_t *str, const type *s, const size_t n);       \
                                                                                 \
 int prefix##_appendStr(prefix##_str_t *dest, const prefix##_str_t *src);        \
 int prefix##_copyStr(prefix##_str_t *dest, const prefix##_str_t *src);
@@ -72,6 +73,19 @@ prefix##_str_t *##prefix##_create()                                             
         return n;                                                               \
 }                                                                               \
                                                                                 \
+prefix##_str_t *##prefix##_createFrom(const prefix##_str_t *src)                \
+{                                                                               \
+        if (!prefix##_isValid(src))                                             \
+                return NULL;                                                    \
+        prefix##_str_t *n = malloc(sizeof(*n));                                 \
+        n->size = src->size;                                                    \
+        n->len = src->len;                                                      \
+        n->string = malloc(n->size * sizeof(*n->string));                       \
+        memmove(n->string, src->string, src->len);                              \
+        n->string[n->len] = (type)0;                                            \
+        return n;                                                               \
+}                                                                               \
+                                                                                \
 void prefix##_free(prefix##_str_t *str)                                         \
 {                                                                               \
         if (str) {                                                              \
@@ -108,9 +122,9 @@ int prefix##_appendChar(prefix##_str_t *str, const type c)                      
         return 0;                                                               \
 }                                                                               \
                                                                                 \
-int prefix##_appendRaw(prefix##_str_t *str, const type *s, const size_t n)      \
+int prefix##_appendNRaw(prefix##_str_t *str, const type *s, const size_t n)     \
 {                                                                               \
-        if (!prefix##_isValid(str))                                             \
+        if (!prefix##_isValid(str) || !s)                                       \
                 return -1;                                                      \
         if (_##prefix##_spaceAvailable(str) < n)                                \
                 _##prefix##_reserve(str, n);                                    \
@@ -120,9 +134,9 @@ int prefix##_appendRaw(prefix##_str_t *str, const type *s, const size_t n)      
         return 0;                                                               \
 }                                                                               \
                                                                                 \
-int prefix##_copyRaw(prefix##_str_t *str, const type *s, const size_t n)        \
+int prefix##_copyNRaw(prefix##_str_t *str, const type *s, const size_t n)       \
 {                                                                               \
-        if (!prefix##_isValid(str))                                             \
+        if (!prefix##_isValid(str) || !s)                                       \
                 return -1;                                                      \
         if (str->size - 1 < n)                                                  \
                 _##prefix##_reserve(str, n - str->size + 1);                    \
