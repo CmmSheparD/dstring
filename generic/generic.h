@@ -27,10 +27,11 @@ prefix##_str_t *prefix##_createFrom(const prefix##_str_t *src);                 
 void prefix##_free(prefix##_str_t *str);                                        \
                                                                                 \
 bool prefix##_isEmpty(const prefix##_str_t *str);                               \
+bool prefix##_isValid(const prefix##_str_t *str);				\
                                                                                 \
 int prefix##_appendChar(prefix##_str_t *str, const type c);                     \
 int prefix##_appendNRaw(prefix##_str_t *str, const type *s, const size_t n);    \
-int prefix##_copyNRaw(prefix##_str_t *str, const type *s, const size_t n);       \
+int prefix##_copyNRaw(prefix##_str_t *str, const type *s, const size_t n);      \
                                                                                 \
 int prefix##_appendStr(prefix##_str_t *dest, const prefix##_str_t *src);        \
 int prefix##_copyStr(prefix##_str_t *dest, const prefix##_str_t *src);
@@ -63,7 +64,7 @@ void _##prefix##_trunc(prefix##_str_t *str)                                     
 }                                                                               \
                                                                                 \
                                                                                 \
-prefix##_str_t *##prefix##_create()                                             \
+prefix##_str_t *prefix##_create()                                               \
 {                                                                               \
         prefix##_str_t *n = malloc(sizeof(*n));                                 \
         n->size = _##prefix##_CHUNK_SIZE;                                       \
@@ -73,7 +74,7 @@ prefix##_str_t *##prefix##_create()                                             
         return n;                                                               \
 }                                                                               \
                                                                                 \
-prefix##_str_t *##prefix##_createFrom(const prefix##_str_t *src)                \
+prefix##_str_t *prefix##_createFrom(const prefix##_str_t *src)                  \
 {                                                                               \
         if (!prefix##_isValid(src))                                             \
                 return NULL;                                                    \
